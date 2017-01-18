@@ -31,7 +31,7 @@ def run():
     #Inicia a janela do pygame
     pygame.init()
     #Define o tamanho da janela e configuracoes
-    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+    screen = pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
     #Configuracoes da visao/display
     resize()
     #Define mouse como invisivel
