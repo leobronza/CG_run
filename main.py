@@ -9,6 +9,6 @@ from OpenGL.GLU import *
 
 def Main():
 
-    Menu()
+    state = Menu()
     # Game()
 
