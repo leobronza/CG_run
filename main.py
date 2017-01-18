@@ -49,9 +49,10 @@ def Main():
     glRotatef(0, 0, 0, 0)
     while True:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+            if event.type == pygame.QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
                 pygame.quit()
                 quit()
+
         glRotatef(0, 0, 0, 0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         Cube()
