@@ -39,7 +39,7 @@ def run():
     #Luz ambiente e sombra
     ambient()
     #chamada da main
-    Main()
+    Main(screen)
 
 #inicial
 run()

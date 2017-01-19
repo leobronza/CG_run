@@ -7,8 +7,11 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 
-def Main():
+def Main(screen):
 
-    state = Menu()
+    state = Menu(screen)
+
+    state.render()
+    # state.loop()
     # Game()
 

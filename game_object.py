@@ -104,14 +104,15 @@ class Game_Object:
     def thickness(self, value):
         self.__thickness = value
 
-    '''
-    def pos(self):
-        return self.x, self.y
 
-    def update_pos(self,x,y):
+    def pos(self):
+        return self.x, self.y, self.z
+
+    def update_pos(self, x, y, z):
         self.x = x
         self.y = y
-    '''
+        self.z = z
+
 
     def get_screen_size(self):
         display_info = display.Info()
