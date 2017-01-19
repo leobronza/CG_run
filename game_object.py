@@ -9,6 +9,9 @@ class Game_Object:
         self.__x = 0
         self.__y = 0
         self.__z = 0
+        self.listX = list()
+        self.listY = list()
+        self.listZ = list()
         self.__is2D = True
         self.__is3D = False
         self.__width = 0
