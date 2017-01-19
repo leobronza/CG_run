@@ -6,18 +6,36 @@ from OpenGL.GLU import *
 from ground import Ground
 
 
-def Rotateall(side):
-    if(side == 0):
-        pass
-    else:
-        for ground in grounds:
-            pass
-
-
-
-
-
-
+def CanTurn(side, dir):
+    if(dir == 1 or dir == 3):
+        if (side == 0):
+            for ground in grounds:
+                pass
+        else:
+            for ground in grounds:
+                pass
+    #olhar eixo x
+    elif(dir == 0 or dir == 2):
+        #olha eixo x negativo
+        if (side == 0):
+            for ground in grounds:
+                for i in range(0, 8):
+                    listx = list(ground.listX)
+                    listz = list(ground.listZ)
+                    if -3 in listx:
+                        for z in listz:
+                            if (z == 0.7):
+                                return True;
+        #olhar eixo x positivo
+        else:
+            for ground in grounds:
+                for i in range(0, 8):
+                    listx = list(ground.listX)
+                    listz = list(ground.listZ)
+                    if 3 in listx:
+                        for z in listz:
+                            if( z > 0.7):
+                                 return True;
 
 ground0 = Ground((1, 1, -1, -1, 1, 1, -1, -1), (-1, 0.15, 0.15, -1, -1, 0.15, -1, 0.15), (1, 1, 1, 1, 3, 3, 3, 3),((0,1,2,3),(3,2,7,6),(6,7,5,4),(4,5,1,0),(1,5,7,2),(4,0,3,6)))
 ground1 = Ground((1, 1, -1, -1, 1, 1, -1, -1), (-1, 0.15, 0.15, -1, -1, 0.15, -1, 0.15), (-1, -1, -1, -1, 1, 1, 1, 1),((0,1,2,3),(3,2,7,6),(6,7,5,4),(4,5,1,0),(1,5,7,2),(4,0,3,6)))
@@ -37,7 +55,8 @@ ground14 = Ground((5, 5, 3, 3, 5, 5, 3, 3), (-1, 0.15, 0.15, -1, -1, 0.15, -1, 0
 ground15 = Ground((7, 7, 5, 5, 7, 7, 5, 5), (-1, 0.15, 0.15, -1, -1, 0.15, -1, 0.15), (-23, -23, -23, -23, -21, -21, -21, -21),((0,1,2,3),(3,2,7,6),(6,7,5,4),(4,5,1,0),(1,5,7,2),(4,0,3,6)))
 ground16 = Ground((9, 9, 7, 7, 9, 9, 7, 7), (-1, 0.15, 0.15, -1, -1, 0.15, -1, 0.15), (-23, -23, -23, -23, -21, -21, -21, -21),((0,1,2,3),(3,2,7,6),(6,7,5,4),(4,5,1,0),(1,5,7,2),(4,0,3,6)))
 ground17 = Ground((11, 11, 9, 9, 11, 11, 9, 9), (-1, 0.15, 0.15, -1, -1, 0.15, -1, 0.15), (-23, -23, -23, -23, -21, -21, -21, -21),((0,1,2,3),(3,2,7,6),(6,7,5,4),(4,5,1,0),(1,5,7,2),(4,0,3,6)))
-grounds = (ground0, ground1, ground2, ground3, ground4, ground5, ground6, ground7, ground8, ground9, ground10, ground11, ground12, ground13, ground14, ground15, ground16,ground17)
+ground18 = Ground((-3, -3, 1, 1, -3, -3, 1, 1), (-1, 0.15, 0.15, -1, -1, 0.15, -1, 0.15), (-23, -23, -23, -23, -21, -21, -21, -21),((0,1,2,3),(3,2,7,6),(6,7,5,4),(4,5,1,0),(1,5,7,2),(4,0,3,6)))
+grounds = (ground0, ground1, ground2, ground3, ground4, ground5, ground6, ground7, ground8, ground9, ground10, ground11, ground12, ground13, ground14, ground15, ground16,ground17, ground18)
 def Grounds():
     glColor3b(0, 1, 0);
     glBegin(GL_QUADS)
@@ -52,6 +71,7 @@ def Game():
 
     glTranslatef(0, -0.4, -5)
     glRotatef(12, 1, 0, 0)
+    dir = 0
 
     while True:
         for event in pygame.event.get():
@@ -59,20 +79,48 @@ def Game():
                 pygame.quit()
                 quit()
             elif event.type == KEYUP and event.key == K_LEFT:
-                #glRotatef(-90, 0, 1, 0)
-                Rotateall(0)
+                if(CanTurn(0, dir) == True):
+                    if(dir == 0):
+                        dir = 3
+                    else:
+                        dir = dir -1
+                    glRotatef(-90, 0, 1, 0)
             elif event.type == KEYUP and event.key == K_RIGHT:
-                #glRotatef(90, 0, 1, 0)
-                Rotateall(1)
+                if (CanTurn(1, dir) == True):
+                    if ( dir == 3):
+                        dir = 0
+                    else:
+                        dir = dir + 1
+                    glRotatef(90, 0, 1, 0)
+
 
         #Atualizacao Grounds
-        for ground in grounds:
-            for i in range(0, len(ground.listZ)):
-                listz = list(ground.listZ)
-                listz[i] = listz[i] + 0.1
-                ground.listZ = listz
+        if(dir == 0):
+            for ground in grounds:
+                for i in range(0, len(ground.listZ)):
+                    listz = list(ground.listZ)
+                    listz[i] = listz[i] + 0.1
+                    ground.listZ = listz
+        elif(dir == 1):
+            for ground in grounds:
+                for i in range(0, len(ground.listX)):
+                    listx = list(ground.listX)
+                    listx[i] = listx[i] - 0.1
+                    ground.listX = listx
+        elif (dir == 2):
+            for ground in grounds:
+                for i in range(0, len(ground.listZ)):
+                    listz = list(ground.listZ)
+                    listz[i] = listz[i] - 0.1
+                    ground.listZ = listz
+        elif (dir == 3):
+            for ground in grounds:
+                for i in range(0, len(ground.listX)):
+                    listx = list(ground.listX)
+                    listx[i] = listx[i] + 0.1
+                    ground.listX = listx
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         Grounds()
         pygame.display.flip()
-        pygame.time.wait(100)
+        #pygame.time.wait(50)
