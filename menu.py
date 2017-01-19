@@ -9,10 +9,16 @@ class Menu(Game_Object):
     def __init__(self, screen):
         Game_Object.__init__(self, 'menu_screen')
         self.screen = screen
-        self.sprite = pygame.image.load("imgs/MenuTemplate.png").convert()
-        self.textureData = pygame.image.tostring(self.sprite, "RGB", 1)
-        self.width, self.height = self.sprite.get_size()
-        self.__selection = Selection(self.screen)
+        self.spriteStart = pygame.image.load("imgs/Menu_Start.png").convert()
+        self.spriteInstructions = pygame.image.load("imgs/Menu_Instructions.png").convert()
+        self.spriteQuit = pygame.image.load("imgs/Menu_Quit.png").convert()
+        self.spriteInstMenu = pygame.image.load("imgs/instructions.png").convert()
+        self.textureDataStart = pygame.image.tostring(self.spriteStart, "RGB", 1)
+        self.textureDataInstructions = pygame.image.tostring(self.spriteInstructions, "RGB", 1)
+        self.textureDataQuit = pygame.image.tostring(self.spriteQuit, "RGB", 1)
+        self.textureDataInstMenu = pygame.image.tostring(self.spriteInstMenu, "RGB", 1)
+        self.width, self.height = self.spriteStart.get_size()
+        self.__selection = Selection()
 
     @property
     def selection(self):
@@ -22,7 +28,7 @@ class Menu(Game_Object):
     def selection(self, value):
         self.__selection = value
 
-    def render(self):
+    def render(self, state):
 
         im = glGenTextures(1)
         glBindTexture(GL_TEXTURE_2D, im)
@@ -31,7 +37,19 @@ class Menu(Game_Object):
         glPushMatrix()
         '''
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self.width, self.height, 0, GL_RGB, GL_UNSIGNED_BYTE, self.textureData)
+        if state == 0:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self.width, self.height, 0, GL_RGB, GL_UNSIGNED_BYTE,
+                         self.textureDataStart)
+        elif state == 1:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self.width, self.height, 0, GL_RGB, GL_UNSIGNED_BYTE,
+                         self.textureDataInstructions)
+        elif state == 2:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self.width, self.height, 0, GL_RGB, GL_UNSIGNED_BYTE,
+                         self.textureDataQuit)
+        elif state == 3:
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self.width, self.height, 0, GL_RGB, GL_UNSIGNED_BYTE,
+                         self.textureDataInstMenu)
+
         glEnable(GL_TEXTURE_2D)
         glLoadIdentity()
         '''
@@ -58,7 +76,7 @@ class Menu(Game_Object):
         glEnd()
 
         pygame.display.flip()
-        pygame.time.wait(1000)
+        # pygame.time.wait(1000)
 
         '''
 
@@ -74,46 +92,54 @@ class Menu(Game_Object):
         '''
 
     def loop(self):
-        in_menu = True
-        while in_menu:
-            self.render()
+        while True:
+            self.render(self.__selection.state)
             for event in pygame.event.get():
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_DOWN:
                         self.selection.state_up()
                     if event.key == pygame.K_UP:
                         self.selection.state_down()
-                    '''if event.key == pygame.K_RETURN:
+                    if event.key == pygame.K_RETURN:
                         if self.selection.state == self.selection.START:
+                            '''
                             # Start the game
                             in_menu, score = self.game_screen.loop()
                             # Game Over
                             if in_menu:
                                 self.game_over_screen.render(score)
                                 in_menu = self.game_over_screen.loop()
+                            '''
+                            return True
                         elif self.selection.state == self.selection.INSTRUCTION:
+                            '''
                             # Load the instruction Screen
                             self.instruction_screen.render()
                             in_menu = self.instruction_screen.loop()
+                            '''
+                            self.selection.state = self.selection.InstMenu
                         elif self.selection.state == self.selection.EXIT:
                             # Exit game
-                            in_menu = False
-                    '''
+                            return False
+                        elif self.selection.state == self.selection.InstMenu:
+                            self.selection.state = self.selection.START
+
                 # CLOSE WINDOW
                 if event.type == pygame.QUIT:
-                    in_menu = False
+                    return False
 
 class Selection(Game_Object):
-    def __init__(self, screen):
+    def __init__(self):
         Game_Object.__init__(self, 'menu_selection')
-        self.screen = screen
-        self.sprite = pygame.image.load("imgs/SetaTemplate.jpg")
+        # self.screen = screen
+        # self.sprite = pygame.image.load("imgs/SetaTemplate.jpg")
         self.START = 0
         self.INSTRUCTION = 1
         self.EXIT = 2
+        self.InstMenu = 3
         self.__state = self.START
-        self.x, self.y = self.get_state_pos(self.state)
-        self.width, self.height = self.sprite.get_size()
+        # self.x, self.y, self.z = self.get_state_pos(self.state)
+        # self.width, self.height = self.sprite.get_size()
 
     # Setters and getters
     @property
@@ -121,12 +147,13 @@ class Selection(Game_Object):
         return self.__state
 
     @state.setter
-    def state(self,value):
+    def state(self, value):
         self.__state = value
 
+    '''
     def get_state_pos(self, state):
         if state == self.START:
-            return 151, 226
+            return -1, 0, 0
         elif state == self.INSTRUCTION:
             return 21, 400
         elif state == self.EXIT:
@@ -134,15 +161,17 @@ class Selection(Game_Object):
         else:
             return 0, 0
 
+
     def update_position(self, state):
-        self.x, self.y = self.get_state_pos(state)
+        self.x, self.y, self.z = self.get_state_pos(state)
+    '''
 
     def state_up(self):
         if self.state < 2:
             self.state += 1
-            self.update_position(self.state)
+            # self.update_position(self.state)
 
     def state_down(self):
-        if self.state > 0:
+        if self.state > 0 and self.state != 3:
             self.state -= 1
-            self.update_position(self.state)
+            # self.update_position(self.state)

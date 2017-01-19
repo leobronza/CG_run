@@ -11,7 +11,8 @@ def Main(screen):
 
     state = Menu(screen)
 
-    state.render()
-    # state.loop()
-    # Game()
+    # state.render()
+    start = state.loop()
+    if start:
+        Game()
 
