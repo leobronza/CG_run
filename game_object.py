@@ -2,9 +2,9 @@ from pygame import display
 
 
 class Game_Object:
-    def __init__(self, name, screen):
+    def __init__(self, name):
         self.__name = name
-        self.__screen = screen
+        self.__screen = None
         self.__sprite = None
         self.__x = 0
         self.__y = 0

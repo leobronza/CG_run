@@ -7,7 +7,8 @@ import math
 
 class Menu(Game_Object):
     def __init__(self, screen):
-        Game_Object.__init__(self, 'menu_screen', screen)
+        Game_Object.__init__(self, 'menu_screen')
+        self.screen = screen
         self.sprite = pygame.image.load("imgs/MenuTemplate.png").convert()
         self.textureData = pygame.image.tostring(self.sprite, "RGB", 1)
         self.width, self.height = self.sprite.get_size()
@@ -104,7 +105,8 @@ class Menu(Game_Object):
 
 class Selection(Game_Object):
     def __init__(self, screen):
-        Game_Object.__init__(self, 'menu_selection', screen)
+        Game_Object.__init__(self, 'menu_selection')
+        self.screen = screen
         self.sprite = pygame.image.load("imgs/SetaTemplate.jpg")
         self.START = 0
         self.INSTRUCTION = 1
