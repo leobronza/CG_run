@@ -5,24 +5,24 @@ from OpenGL.GLU import *
 
 from ground import Ground
 
-def CanTurn(side, groundCurrentPlus, groundCurrentPlusPlus):
+def CanTurn(side, groundCurrent, groundCurrentPlus):
     if side == 0:
-        if grounds[groundCurrentPlus].dir == 0 and grounds[groundCurrentPlusPlus].dir == 3:
+        if grounds[groundCurrent].dir == 0 and grounds[groundCurrentPlus].dir == 3:
             return True
-        if grounds[groundCurrentPlus].dir == 1 and grounds[groundCurrentPlusPlus].dir == 0:
+        if grounds[groundCurrent].dir == 1 and grounds[groundCurrentPlus].dir == 0:
             return True
-        if grounds[groundCurrentPlus].dir == 2 and grounds[groundCurrentPlusPlus].dir == 1:
+        if grounds[groundCurrent].dir == 2 and grounds[groundCurrentPlus].dir == 1:
             return True
-        if grounds[groundCurrentPlus].dir == 3 and grounds[groundCurrentPlusPlus].dir == 2:
+        if grounds[groundCurrent].dir == 3 and grounds[groundCurrentPlus].dir == 2:
             return True
     else:
-        if grounds[groundCurrentPlus].dir == 0 and grounds[groundCurrentPlusPlus].dir == 1:
+        if grounds[groundCurrent].dir == 0 and grounds[groundCurrentPlus].dir == 1:
             return True
-        if grounds[groundCurrentPlus].dir == 1 and grounds[groundCurrentPlusPlus].dir == 2:
+        if grounds[groundCurrent].dir == 1 and grounds[groundCurrentPlus].dir == 2:
             return True
-        if grounds[groundCurrentPlus].dir == 2 and grounds[groundCurrentPlusPlus].dir == 3:
+        if grounds[groundCurrent].dir == 2 and grounds[groundCurrentPlus].dir == 3:
             return True
-        if grounds[groundCurrentPlus].dir == 3 and grounds[groundCurrentPlusPlus].dir == 0:
+        if grounds[groundCurrent].dir == 3 and grounds[groundCurrentPlus].dir == 0:
             return True
 
 ground0 = Ground((1.5, 1.5, -1.5, -1.5, 1.5, 1.5, -1.5, -1.5), (-1, 0.15, 0.15, -1, -1, 0.15, -1, 0.15), (2, 2, 2, 2, 5, 5, 5, 5),((0,1,2,3),(3,2,7,6),(6,7,5,4),(4,5,1,0),(1,5,7,2),(4,0,3,6)), 0)
@@ -55,6 +55,34 @@ def Player():
             glVertex3fv((groundP.listX[vertex], groundP.listY[vertex], groundP.listZ[vertex]))
     glEnd()
 
+# def PlayerKeepMoving(player):
+
+
+def MovGrounds(groundCurrentPlus):
+    if (grounds[groundCurrentPlus].dir == 0):
+        for ground in grounds:
+            for i in range(0, len(ground.listZ)):
+                listz = list(ground.listZ)
+                listz[i] = listz[i] + 0.1
+                ground.listZ = listz
+    elif (grounds[groundCurrentPlus].dir == 1):
+        for ground in grounds:
+            for i in range(0, len(ground.listX)):
+                listx = list(ground.listX)
+                listx[i] = listx[i] - 0.1
+                ground.listX = listx
+    elif (grounds[groundCurrentPlus].dir == 2):
+        for ground in grounds:
+            for i in range(0, len(ground.listZ)):
+                listz = list(ground.listZ)
+                listz[i] = listz[i] - 0.1
+                ground.listZ = listz
+    elif (grounds[groundCurrentPlus].dir == 3):
+        for ground in grounds:
+            for i in range(0, len(ground.listX)):
+                listx = list(ground.listX)
+                listx[i] = listx[i] + 0.1
+                ground.listX = listx
 
 # Printa os Grounds
 def Grounds():
@@ -72,6 +100,7 @@ def Game():
     glRotatef(12, 1, 0, 0)
     contaux = 0
     groundCurrent = 1
+    margem = 0
 
     while True:
         if groundCurrent == 17:
@@ -92,55 +121,52 @@ def Game():
                 quit()
             # Vira camera ao pressinar LEFT
             elif event.type == KEYUP and event.key == K_LEFT:
-                if CanTurn(0, groundCurrentPlus, groundCurrentPlusPlus) == True:
+                if CanTurn(0, groundCurrent, groundCurrentPlus) == True:
                     glRotatef(-90, 0, 1, 0)
+                    grounds[groundCurrent].dir = grounds[groundCurrentPlus].dir
+                    contaux = 1.5
             # Vira camera ao pressinar RIGHT
             elif event.type == KEYUP and event.key == K_RIGHT:
-                if CanTurn(1, groundCurrentPlus, groundCurrentPlusPlus ) == True:
+                if CanTurn(1, groundCurrent, groundCurrentPlus ) == True:
                     glRotatef(90, 0, 1, 0)
+                    grounds[groundCurrent].dir = grounds[groundCurrentPlus].dir
+                    contaux = 1.5
 
         if(grounds[groundCurrent].dir == grounds[groundCurrentPlus].dir):
             # Atualizacao posicao dos Grounds
-            if(grounds[groundCurrentPlus].dir == 0):
-                for ground in grounds:
-                    for i in range(0, len(ground.listZ)):
-                        listz = list(ground.listZ)
-                        listz[i] = listz[i] + 0.1
-                        ground.listZ = listz
-            elif(grounds[groundCurrentPlus].dir == 1):
-                for ground in grounds:
-                    for i in range(0, len(ground.listX)):
-                        listx = list(ground.listX)
-                        listx[i] = listx[i] - 0.1
-                        ground.listX = listx
-            elif (grounds[groundCurrentPlus].dir == 2):
-                for ground in grounds:
-                    for i in range(0, len(ground.listZ)):
-                        listz = list(ground.listZ)
-                        listz[i] = listz[i] - 0.1
-                        ground.listZ = listz
-            elif (grounds[groundCurrentPlus].dir == 3):
-                for ground in grounds:
-                    for i in range(0, len(ground.listX)):
-                        listx = list(ground.listX)
-                        listx[i] = listx[i] + 0.1
-                        ground.listX = listx
+            MovGrounds(groundCurrentPlus)
 
-        # Atualiza qual eh o bloco atual
-        if contaux >= 3:
-            if groundCurrent == 17:
-                groundCurrent = 0
-                contaux = 0
+            # Atualiza qual eh o bloco atual
+            if contaux >= 3:
+                if groundCurrent == 17:
+                    groundCurrent = 0
+                    contaux = 0.1
+                else:
+                    groundCurrent = groundCurrent + 1
+                    contaux = 0.1
             else:
-                groundCurrent = groundCurrent + 1
-                contaux = 0
+                contaux = contaux + 0.1
         else:
-            contaux = contaux + 0.1
 
-        print groundCurrent
+            if margem < 1.5:
+                MovGrounds(groundCurrent)
+                margem = margem + 0.1
+
+            # if margem >= 1.5:
+            #     if groundCurrent == 17:
+            #         groundCurrent = 0
+            #         contaux = 1.6
+            #     else:
+            #         groundCurrent = groundCurrent + 1
+            #         contaux = 1.6
+            #     margem = 0
+            # else:
+            #     MovGrounds(groundCurrent)
+            #     margem = margem + 0.1
+
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         Grounds()
         Player()
         pygame.display.flip()
-        pygame.time.wait(50)
+        #pygame.time.wait(50)
