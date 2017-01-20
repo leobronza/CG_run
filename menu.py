@@ -12,7 +12,7 @@ class Menu(Game_Object):
         self.spriteStart = pygame.image.load("imgs/Menu_Start.png").convert()
         self.spriteInstructions = pygame.image.load("imgs/Menu_Instructions.png").convert()
         self.spriteQuit = pygame.image.load("imgs/Menu_Quit.png").convert()
-        self.spriteInstMenu = pygame.image.load("imgs/instructions.png").convert()
+        self.spriteInstMenu = pygame.image.load("imgs/Instructions.png").convert()
         self.textureDataStart = pygame.image.tostring(self.spriteStart, "RGB", 1)
         self.textureDataInstructions = pygame.image.tostring(self.spriteInstructions, "RGB", 1)
         self.textureDataQuit = pygame.image.tostring(self.spriteQuit, "RGB", 1)

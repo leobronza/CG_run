@@ -9,10 +9,10 @@ from OpenGL.GLU import *
 
 def Main(screen):
 
-    state = Menu(screen)
+    #state = Menu(screen)
 
     # state.render()
-    start = state.loop()
-    if start:
-        Game()
-
+    #start = state.loop()
+    #if start:
+    #    Game()
+    Game()
