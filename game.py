@@ -101,6 +101,8 @@ def Game():
     contaux = 0
     groundCurrent = 1
     margem = 0
+    wait4right = False
+    wait4left = False
 
     while True:
         if groundCurrent == 17:
@@ -121,6 +123,8 @@ def Game():
                 quit()
             # Vira camera ao pressinar LEFT
             elif event.type == KEYUP and event.key == K_LEFT:
+                if grounds[groundCurrent].dir != grounds[groundCurrentPlusPlus].dir:
+                    wait4left = True
                 if CanTurn(0, groundCurrent, groundCurrentPlus) == True:
                     glRotatef(-90, 0, 1, 0)
                     grounds[groundCurrent].dir = grounds[groundCurrentPlus].dir
@@ -128,9 +132,11 @@ def Game():
             # Vira camera ao pressinar RIGHT
             elif event.type == KEYUP and event.key == K_RIGHT:
                 if CanTurn(1, groundCurrent, groundCurrentPlus ) == True:
-                    glRotatef(90, 0, 1, 0)
-                    grounds[groundCurrent].dir = grounds[groundCurrentPlus].dir
-                    contaux = 1.5
+                    wait4right = True
+                    # if margem > 1.5:
+                    #     pass
+
+
 
         if(grounds[groundCurrent].dir == grounds[groundCurrentPlus].dir):
             # Atualizacao posicao dos Grounds
@@ -146,11 +152,25 @@ def Game():
                     contaux = 0.1
             else:
                 contaux = contaux + 0.1
+        # elif grounds[groundCurrent].dir != grounds[groundCurrentPlusPlus].dir:
+        #     # vai precisar fazer a curva
+        #     pass
+        #
+
         else:
+
+            if wait4right and margem >= 1.5:
+                glRotatef(90, 0, 1, 0)
+                grounds[groundCurrent].dir = grounds[groundCurrentPlus].dir
+                contaux = 1.5
+                wait4right = False
 
             if margem < 1.5:
                 MovGrounds(groundCurrent)
                 margem = margem + 0.1
+                # if wait4right:
+
+
 
             # if margem >= 1.5:
             #     if groundCurrent == 17:
